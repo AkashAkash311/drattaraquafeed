@@ -21,17 +21,12 @@
 
 body {
   font-family: Arial, Helvetica, sans-serif;
-  background-image: url('../assets/background.jpg');
+  background-image: 
+    linear-gradient(rgba(255,255,255,0.95), rgba(240, 240, 240, 0.93)),
+    url('../assets/background.jpg'),
+    linear-gradient(135deg, #f8fdff 0%, #eafcff 100%);
   background-size: 100% auto;
   background-position: center;
   background-repeat: no-repeat;
-  background-attachment: fixed;   /* stays fixed when scrolling */
-}
-
-body::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-color: rgba(180, 42, 42, 0.3); /* black overlay, 30% opacity */
-  z-index: -1; /* keep it behind content */
+  background-attachment: fixed;
 }

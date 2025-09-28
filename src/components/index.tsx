@@ -3,6 +3,7 @@ import React from "react";
 import Header from "./headers";
 import EmblaCarousel from "./carousel";
 import Footer from "./footers";
+import DetailsPage from "./detailsPage";
 import { EmblaOptionsType } from "embla-carousel";
 
 import FirstImage from "@/assets/12341234.png";
@@ -75,7 +76,8 @@ const Index = () => {
     <div className="min-h-screen flex flex-col gap-1">
       <Header />
       {/* <div className="mt-1 flex-grow"> */}
-        <EmblaCarousel slides={SLIDES} options={OPTIONS} />
+      <EmblaCarousel slides={SLIDES} options={OPTIONS} />
+      <DetailsPage />
       {/* </div> */}
       <Footer />
     </div>

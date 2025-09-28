@@ -1,5 +1,7 @@
-import { Mail, MapPin, Phone } from 'lucide-react'
 import React from 'react'
+import { Mail, MapPin, Phone } from 'lucide-react'
+import Image from 'next/image'
+import HeaderLogo from "@/assets/opf-logo.png";
 
 const index = () => {
   return (
@@ -9,9 +11,7 @@ const index = () => {
             {/* Company Logo */}
             <div className="lg:col-span-1">
               <div className="flex items-center space-x-3 mb-6">
-                <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">DA</span>
-                </div>
+                <Image src={HeaderLogo} alt="Logo" className="w-10 h-10 rounded-full" />
               </div>
             </div>
 
