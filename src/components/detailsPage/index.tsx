@@ -20,7 +20,7 @@ const AttarInfoSlide = () => {
           <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-orange-500 rounded-3xl p-8 md:p-12 shadow-2xl">
             <div className="text-white">
               <p className="text-lg md:text-xl leading-relaxed font-medium">
-                Dr. Attar Aqua feed™ is manufacturer of high quality 
+                Dr. Attar Aqua feed is manufacturer of high quality 
                 shrimp feed in India. Producing a nutritionally balanced 
                 shrimp feed which is{' '}
                 <span className="font-semibold">Scientifically formulated</span> in 
