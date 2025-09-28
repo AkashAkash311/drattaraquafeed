@@ -6,7 +6,16 @@ import Image from 'next/image';
 
 const index = () => {
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50">
+    <header
+      className="sticky top-0 z-50 shadow-lg backdrop-blur-md bg-gradient-to-br from-white/40 via-slate-200/20 to-white/40 border-b border-slate-200"
+      style={{
+        background: "linear-gradient(135deg, rgba(255,255,255,0.5) 0%, rgba(200,220,255,0.15) 100%)",
+        boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.12)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+        borderRadius: "0 0 24px 24px"
+      }}
+    >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-3">
