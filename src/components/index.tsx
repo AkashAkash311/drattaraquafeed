@@ -11,6 +11,16 @@ import {
   X,
 } from "lucide-react";
 import { useState } from "react";
+import HeroImage from "@/assets/12341234.png";
+import BannerImage from "@/assets/zinga-banner-1.png";
+import LogoImage from "@/assets/opf-logo.png";
+import ProductStarterImage from "@/assets/Freshwater-white-prawns.jpg";
+import ProductGrowerImage from "@/assets/50-ton.jpg";
+import ProductFinisherImage from "@/assets/71dMJGr-pdS-_AC_UF10001000_QL80_.jpg";
+import GalleryA from "@/assets/zinga-2.jpg";
+import GalleryB from "@/assets/Untitled-design-5-867x1536.png";
+import GalleryC from "@/assets/Refrigerated-Isolated-Vehicles-scaled.jpg";
+import GalleryD from "@/assets/20200503_101419-01_1024x1024-2x.webp";
 
 const NAV_ITEMS = [
   { label: "Home", href: "#home" },
@@ -52,28 +62,23 @@ const PRODUCTS = [
     name: "Starter Feed",
     description:
       "High digestibility micro-pellets for early-stage shrimp with improved survival support.",
-    image: "/img/Freshwater-white-prawns.webp",
+    image: ProductStarterImage,
   },
   {
     name: "Grower Feed",
     description:
       "Protein-rich formulation designed to sustain rapid growth in the grower cycle.",
-    image: "/img/50-ton.webp",
+    image: ProductGrowerImage,
   },
   {
     name: "Finisher Feed",
     description:
       "Performance feed focused on weight gain, color quality, and harvest consistency.",
-    image: "/img/71dMJGr-pdS-_AC_UF10001000_QL80_.webp",
+    image: ProductFinisherImage,
   },
 ];
 
-const GALLERY_IMAGES = [
-  "/img/2725037-scaled.webp",
-  "/img/Refrigerated-Isolated-Vehicles-scaled.webp",
-  "/img/zinga-2.webp",
-  "/img/Untitled-design-5-867x1536.webp",
-];
+const GALLERY_IMAGES = [GalleryD, GalleryC, GalleryA, GalleryB];
 
 const Index = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -84,7 +89,7 @@ const Index = () => {
         <div className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <a href="#home" className="flex items-center gap-3">
             <Image
-              src="/img/opf-logo.webp"
+              src={LogoImage}
               alt="Dr. Attar Aqua Feed"
               width={48}
               height={48}
@@ -147,7 +152,7 @@ const Index = () => {
       <main>
         <section id="home" className="relative isolate min-h-[92vh] overflow-hidden pt-28">
           <Image
-            src="/img/12341234.webp"
+            src={HeroImage}
             alt="High-performance shrimp feed"
             fill
             priority
@@ -202,7 +207,7 @@ const Index = () => {
         <section id="about" className="mx-auto grid w-full max-w-7xl gap-8 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8">
           <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl">
             <Image
-              src="/img/zinga-banner-1.webp"
+              src={BannerImage}
               alt="Production overview"
               width={1750}
               height={650}
@@ -307,7 +312,7 @@ const Index = () => {
             <div className="grid gap-4 sm:grid-cols-2">
               {GALLERY_IMAGES.map((image, index) => (
                 <div
-                  key={image}
+                  key={`gallery-${index}`}
                   className={`relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-md ${
                     index === 0 ? "sm:col-span-2 h-64" : "h-52"
                   }`}
