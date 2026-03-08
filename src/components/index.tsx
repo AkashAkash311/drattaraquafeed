@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import {
   ArrowUpRight,
   Award,
@@ -9,28 +10,28 @@ import {
   Factory,
   Leaf,
   Menu,
+  MessageCircle,
   ShieldCheck,
   Sparkles,
   Truck,
   X,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import HeroImage from "@/assets/12341234.png";
 import BannerImage from "@/assets/zinga-banner-1.png";
 import LogoImage from "@/assets/opf-logo.png";
-import ProductStarterImage from "@/assets/Freshwater-white-prawns.jpg";
-import ProductGrowerImage from "@/assets/50-ton.jpg";
-import ProductFinisherImage from "@/assets/71dMJGr-pdS-_AC_UF10001000_QL80_.jpg";
 import GalleryA from "@/assets/zinga-2.jpg";
 import GalleryB from "@/assets/Untitled-design-5-867x1536.png";
 import GalleryC from "@/assets/Refrigerated-Isolated-Vehicles-scaled.jpg";
 import GalleryD from "@/assets/20200503_101419-01_1024x1024-2x.webp";
+import { PRODUCTS } from "@/data/products";
 
 const NAV_ITEMS = [
   { label: "Home", href: "#home" },
   { label: "About", href: "#about" },
   { label: "Products", href: "#products" },
   { label: "Process", href: "#process" },
+  { label: "Trust", href: "#trust" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -57,25 +58,89 @@ const FEATURES = [
   },
 ];
 
-const PRODUCTS = [
+const GALLERY_IMAGES = [GalleryD, GalleryC, GalleryA, GalleryB];
+const TRUST_EVIDENCE = [
   {
-    name: "Starter Feed",
-    description: "High digestibility micro-pellets for early-stage shrimp with stronger survival support.",
-    image: ProductStarterImage,
+    title: "Lab-Tested Batch Checks",
+    description: "Routine checks for moisture, protein, pellet stability, and contamination risk control.",
   },
   {
-    name: "Grower Feed",
-    description: "Protein-focused formula designed to sustain fast and stable growth cycles.",
-    image: ProductGrowerImage,
+    title: "Process Documentation",
+    description: "Production logs, input records, and dispatch traceability maintained lot-wise.",
   },
   {
-    name: "Finisher Feed",
-    description: "Performance feed engineered for harvest weight consistency and quality output.",
-    image: ProductFinisherImage,
+    title: "Farm Performance Tracking",
+    description: "Feed tray observations, growth trend tracking, and FCR monitoring support.",
   },
 ];
 
-const GALLERY_IMAGES = [GalleryD, GalleryC, GalleryA, GalleryB];
+const PROCESS_PROOFS = [
+  {
+    image: GalleryC,
+    title: "Dispatch and Logistics",
+    caption: "Structured dispatch process for timely and condition-safe delivery.",
+  },
+  {
+    image: GalleryA,
+    title: "Pond-Level Validation",
+    caption: "Field usage visuals from active farms and grow-out cycles.",
+  },
+  {
+    image: BannerImage,
+    title: "Production Supervision",
+    caption: "Manufacturing and handling under controlled process stages.",
+  },
+];
+
+const STATE_COVERAGE = ["Haryana", "Andhra Pradesh", "Gujarat", "Odisha", "West Bengal", "Tamil Nadu", "Kerala", "Maharashtra"];
+
+const TESTIMONIALS = [
+  {
+    quote:
+      "Feed response has been consistent. We observed better tray clearing and stronger growth in the same cycle window.",
+    name: "R. Kumar",
+    role: "Vannamei Farmer, Andhra Pradesh",
+  },
+  {
+    quote: "Dealer support and dispatch communication are reliable. Repeat demand has improved season over season.",
+    name: "S. Patel",
+    role: "Aqua Input Dealer, Gujarat",
+  },
+  {
+    quote: "Final stage performance helped us maintain more uniform harvest sizing with improved market acceptance.",
+    name: "M. Das",
+    role: "Farm Operator, Odisha",
+  },
+  {
+    quote: "Starter response was better than our previous cycle, and feed tray checks stayed more predictable.",
+    name: "P. Singh",
+    role: "Shrimp Farmer, West Bengal",
+  },
+  {
+    quote: "Team guidance on feed stage transition reduced confusion at farm level and improved routine execution.",
+    name: "A. Reddy",
+    role: "Farm Supervisor, Andhra Pradesh",
+  },
+  {
+    quote: "Dealer onboarding was smooth and dispatch timelines were practical for our regional coverage model.",
+    name: "N. Shah",
+    role: "Channel Partner, Maharashtra",
+  },
+  {
+    quote: "Finisher batch consistency helped us target market-size harvests with better confidence.",
+    name: "K. Nair",
+    role: "Aqua Farmer, Kerala",
+  },
+];
+
+const TESTIMONIALS_LOOP = [...TESTIMONIALS, ...TESTIMONIALS];
+
+const HARVEST_SNAPSHOTS = [
+  { label: "Average FCR Band", value: "1.3 - 1.6*" },
+  { label: "Survival Band", value: "75% - 88%*" },
+  { label: "Cycle Weight Target", value: "22 - 28 g*" },
+];
+const WHATSAPP_NUMBER = "918750778845";
 
 const HERO_SLIDES = [
   {
@@ -104,6 +169,30 @@ const HERO_SLIDES = [
 const Index = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
+  const [farmerSubmitted, setFarmerSubmitted] = useState(false);
+  const [dealerSubmitted, setDealerSubmitted] = useState(false);
+  const [farmerForm, setFarmerForm] = useState({
+    name: "",
+    phone: "",
+    state: "",
+    pondSize: "",
+    species: "Vannamei",
+    feedStage: "Starter",
+    message: "",
+  });
+  const [dealerForm, setDealerForm] = useState({
+    name: "",
+    phone: "",
+    company: "",
+    state: "",
+    district: "",
+    monthlyVolume: "Up to 5 tons",
+    logistics: "Yes",
+    message: "",
+  });
+
+  const fieldClassName =
+    "w-full rounded-xl border border-slate-300/80 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-orange-400 focus:ring-2 focus:ring-orange-200";
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -118,6 +207,49 @@ const Index = () => {
 
   const goToNextSlide = () => {
     setActiveSlide((prev) => (prev + 1) % HERO_SLIDES.length);
+  };
+
+  const buildWhatsAppLink = (text: string) => {
+    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
+  };
+
+  const handleFarmerSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const source = `website-home-farmer:${window.location.pathname}`;
+    const text = [
+      "New Feed Recommendation Lead",
+      `Name: ${farmerForm.name}`,
+      `Phone: ${farmerForm.phone}`,
+      `State: ${farmerForm.state}`,
+      `Pond Size: ${farmerForm.pondSize}`,
+      `Species: ${farmerForm.species}`,
+      `Feed Stage: ${farmerForm.feedStage}`,
+      `Farm Requirement: ${farmerForm.message || "NA"}`,
+      `Source: ${source}`,
+    ].join("\n");
+
+    window.open(buildWhatsAppLink(text), "_blank", "noopener,noreferrer");
+    setFarmerSubmitted(true);
+  };
+
+  const handleDealerSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const source = `website-home-dealer:${window.location.pathname}`;
+    const text = [
+      "New Dealer Application Lead",
+      `Name: ${dealerForm.name}`,
+      `Phone: ${dealerForm.phone}`,
+      `Company: ${dealerForm.company}`,
+      `State: ${dealerForm.state}`,
+      `District: ${dealerForm.district}`,
+      `Monthly Volume: ${dealerForm.monthlyVolume}`,
+      `Logistics Capacity: ${dealerForm.logistics}`,
+      `Message: ${dealerForm.message || "NA"}`,
+      `Source: ${source}`,
+    ].join("\n");
+
+    window.open(buildWhatsAppLink(text), "_blank", "noopener,noreferrer");
+    setDealerSubmitted(true);
   };
 
   return (
@@ -151,12 +283,12 @@ const Index = () => {
                 {item.label}
               </a>
             ))}
-            <a
+            {/* <a
               href="#contact"
               className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-orange-500 to-orange-400 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-orange-500/30 transition hover:scale-[1.02]"
             >
               Get Quote <ArrowUpRight className="h-4 w-4" />
-            </a>
+            </a> */}
           </nav>
 
           <button
@@ -240,10 +372,16 @@ const Index = () => {
                   Explore Products
                 </a>
                 <a
-                  href="#contact"
+                  href="#farmer-form"
                   className="rounded-full border border-white/45 bg-white/10 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/20"
                 >
-                  Contact Sales
+                  I am a Farmer
+                </a>
+                <a
+                  href="#dealer-form"
+                  className="rounded-full border border-orange-300/65 bg-orange-400/20 px-6 py-3 text-sm font-semibold text-orange-100 transition hover:bg-orange-400/35"
+                >
+                  Become a Dealer
                 </a>
               </div>
             </div>
@@ -340,9 +478,9 @@ const Index = () => {
                   <div className="space-y-3 p-6">
                     <h3 className="font-display text-2xl">{product.name}</h3>
                     <p className="text-sm leading-relaxed text-slate-300">{product.description}</p>
-                    <button type="button" className="inline-flex items-center gap-2 text-sm font-bold text-orange-300">
+                    <Link href={`/products/${product.slug}`} className="inline-flex items-center gap-2 text-sm font-bold text-orange-300">
                       View details <Award className="h-4 w-4" />
-                    </button>
+                    </Link>
                   </div>
                 </article>
               ))}
@@ -391,13 +529,116 @@ const Index = () => {
             </div>
           </div>
         </section>
+
+        <section id="trust" className="mx-auto w-full max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
+          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl sm:p-8">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="text-sm font-bold uppercase tracking-[0.2em] text-orange-600">Trust and Proof</p>
+                <h2 className="font-display mt-3 text-4xl leading-tight text-slate-900">Proof-Backed Performance for Farms and Dealers</h2>
+              </div>
+              <p className="max-w-xl text-sm text-slate-600">
+                Evidence modules designed to support technical confidence before purchase decisions.
+              </p>
+            </div>
+
+            <div className="mt-8 grid gap-4 md:grid-cols-3">
+              {TRUST_EVIDENCE.map((item) => (
+                <article key={item.title} className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                  <h3 className="text-lg font-bold text-slate-900">{item.title}</h3>
+                  <p className="mt-2 text-sm text-slate-600">{item.description}</p>
+                </article>
+              ))}
+            </div>
+
+            <div className="mt-8 grid gap-4 md:grid-cols-3">
+              {PROCESS_PROOFS.map((proof) => (
+                <article key={proof.title} className="overflow-hidden rounded-2xl border border-slate-200">
+                  <div className="relative h-44 w-full">
+                    <Image src={proof.image} alt={proof.title} fill className="object-cover" />
+                  </div>
+                  <div className="bg-white p-4">
+                    <h3 className="text-base font-bold text-slate-900">{proof.title}</h3>
+                    <p className="mt-1 text-sm text-slate-600">{proof.caption}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            <div className="mt-8 grid gap-6 lg:grid-cols-2">
+              <div className="rounded-2xl border border-cyan-200 bg-cyan-50 p-5">
+                <h3 className="text-lg font-bold text-slate-900">State Coverage</h3>
+                <p className="mt-1 text-sm text-slate-600">Active market and distribution coverage footprint.</p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {STATE_COVERAGE.map((state) => (
+                    <span key={state} className="rounded-full border border-cyan-300 bg-white px-3 py-1 text-xs font-semibold text-cyan-800">
+                      {state}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-orange-200 bg-orange-50 p-5">
+                <h3 className="text-lg font-bold text-slate-900">Harvest Result Snapshots</h3>
+                <p className="mt-1 text-xs text-slate-600">*Indicative field outcomes. Actual results vary by farm management and water conditions.</p>
+                <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                  {HARVEST_SNAPSHOTS.map((item) => (
+                    <div key={item.label} className="rounded-xl border border-orange-200 bg-white p-3 text-center">
+                      <p className="text-xl font-bold text-slate-900">{item.value}</p>
+                      <p className="mt-1 text-xs font-semibold uppercase tracking-[0.1em] text-slate-500">{item.label}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 py-4">
+              <div className="testimonial-marquee flex w-max gap-4 px-4">
+                {TESTIMONIALS_LOOP.map((testimonial, index) => (
+                  <article
+                    key={`${testimonial.name}-${index}`}
+                    className="w-[320px] flex-none rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:w-[360px]"
+                  >
+                    <p className="text-sm leading-relaxed text-slate-700">&ldquo;{testimonial.quote}&rdquo;</p>
+                    <p className="mt-4 text-sm font-bold text-slate-900">{testimonial.name}</p>
+                    <p className="text-xs text-slate-500">{testimonial.role}</p>
+                  </article>
+                ))}
+              </div>
+            </div>
+
+            {/* <div className="mt-8 rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
+              <h3 className="text-lg font-bold text-slate-900">Certifications and Technical Affiliations</h3>
+              <p className="mt-1 text-sm text-slate-600">
+                Add only publicly verifiable certificate/registration numbers below before publishing.
+              </p>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="rounded-xl border border-emerald-200 bg-white p-3 text-sm text-slate-700">Certificate 1: Pending verified ID</div>
+                <div className="rounded-xl border border-emerald-200 bg-white p-3 text-sm text-slate-700">Certificate 2: Pending verified ID</div>
+                <div className="rounded-xl border border-emerald-200 bg-white p-3 text-sm text-slate-700">Affiliation 1: Pending verified ID</div>
+                <div className="rounded-xl border border-emerald-200 bg-white p-3 text-sm text-slate-700">Affiliation 2: Pending verified ID</div>
+              </div>
+            </div> */}
+          </div>
+        </section>
       </main>
+
+      <a
+        href={buildWhatsAppLink("Hello Dr. Attar Aqua Feed, I need help with shrimp feed planning.")}
+        target="_blank"
+        rel="noreferrer"
+        className="fixed bottom-5 right-5 z-50 inline-flex items-center gap-2 rounded-full bg-[#25D366] px-4 py-3 text-sm font-bold text-white shadow-2xl shadow-emerald-900/30 transition hover:scale-[1.03]"
+        aria-label="Chat on WhatsApp"
+      >
+        <MessageCircle className="h-5 w-5" />
+        WhatsApp
+      </a>
 
       <footer id="contact" className="relative overflow-hidden bg-slate-950/84 py-18 text-white backdrop-blur-[1px]">
         <div className="pointer-events-none absolute -right-8 -top-16 h-56 w-56 rounded-full bg-orange-500/20 blur-3xl" />
         <div className="pointer-events-none absolute -left-12 bottom-0 h-56 w-56 rounded-full bg-teal-400/20 blur-3xl" />
 
-        <div className="relative mx-auto grid w-full max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1fr_1.2fr] lg:px-8">
+        <div className="relative mx-auto grid w-full max-w-7xl gap-8 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:px-8">
           <div>
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-orange-300">Contact</p>
             <h2 className="font-display mt-4 text-4xl leading-tight">Lets Build Your Next Successful Cycle</h2>
@@ -409,51 +650,200 @@ const Index = () => {
               <p>Phone: +91-8750778845</p>
               <p>Address: Village Dohki, Charkhi Dadri, Haryana - 124507</p>
             </div>
+            <div className="mt-8">
+              <p className="text-xs font-bold uppercase tracking-[0.14em] text-orange-300">Guides and Pages</p>
+              <div className="mt-3 grid grid-cols-1 gap-2 text-sm font-semibold text-orange-200 sm:grid-cols-2">
+                <Link href="/shrimp-feed-manufacturer" className="hover:text-orange-100">Shrimp Feed Manufacturer</Link>
+                <Link href="/vannamei-feed-program" className="hover:text-orange-100">Vannamei Feed Program</Link>
+                <Link href="/feed-management-guide" className="hover:text-orange-100">Feed Management Guide</Link>
+                <Link href="/dealer-network" className="hover:text-orange-100">Dealer Network</Link>
+                <Link href="/about-plant-quality-process" className="hover:text-orange-100">About Plant / Quality Process</Link>
+                <Link href="/contact-by-region" className="hover:text-orange-100">Contact by Region</Link>
+              </div>
+            </div>
           </div>
 
-          <div className="grid gap-5">
-            {/* <div className="glass-card rounded-3xl p-7 text-slate-900 shadow-2xl">
-              <h3 className="font-display text-3xl">Quick Reach</h3>
-              <p className="mt-2 text-sm text-slate-600">We usually respond within one business day.</p>
-              <div className="mt-6 grid gap-3">
-                <a
-                  href="mailto:contact@drattaraquafeed.com"
-                  className="rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-                >
-                  Email Sales Team
-                </a>
-                <a
-                  href="tel:+918750778845"
-                  className="rounded-lg bg-gradient-to-r from-orange-500 to-orange-400 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-orange-500/25 transition hover:scale-[1.01]"
-                >
-                  Call Now
-                </a>
-              </div>
-            </div> */}
+          <div className="overflow-hidden rounded-3xl border border-white/20 bg-white/10 shadow-2xl backdrop-blur-sm">
+            <div className="border-b border-white/20 px-5 py-3 text-sm font-semibold text-white">
+              Location Map: DR ATTAR AQUA FEED, Dohki, Haryana - 127306
+            </div>
+            <div className="relative h-72 w-full sm:h-80">
+              <iframe
+                title="Dr. Attar Aqua Feed Location Map"
+                src="https://www.google.com/maps?q=DR%20ATTAR%20AQUA%20FEED%2C%20Dohki%2C%20Haryana%20127306&output=embed"
+                className="h-full w-full border-0"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
+            </div>
+            <div className="border-t border-white/20 px-5 py-3">
+              <a
+                href="https://www.google.com/maps/dir//DR+ATTAR+AQUA+FEED,+Dohki,+Haryana+127306/@28.5058064,77.0679584,15z/data=!4m8!4m7!1m0!1m5!1m1!1s0x39128bd653d58f2b:0x8c03eb0bb4d0189e!2m2!1d76.1533116!2d28.6417155?entry=ttu&g_ep=EgoyMDI2MDMwMS4xIKXMDSoASAFQAw%3D%3D"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 text-sm font-bold text-orange-200 transition hover:text-orange-100"
+              >
+                Open directions in Google Maps <ArrowUpRight className="h-4 w-4" />
+              </a>
+            </div>
+          </div>
 
-            <div className="overflow-hidden rounded-3xl border border-white/20 bg-white/10 shadow-2xl backdrop-blur-sm">
-              <div className="border-b border-white/20 px-5 py-3 text-sm font-semibold text-white">
-                Location Map: DR ATTAR AQUA FEED, Dohki, Haryana - 127306
+          <div className="grid gap-5 lg:col-span-2">
+            <div className="flex flex-col gap-5 xl:flex-row">
+              <div id="farmer-form" className="rounded-3xl bg-white p-6 text-slate-900 shadow-2xl xl:flex-1">
+                <h3 className="font-display text-3xl">Get Feed Recommendation</h3>
+                <p className="mt-1 text-sm text-slate-600">Farmer lead form. Response SLA: within one business day.</p>
+                <form className="mt-5 grid gap-3" onSubmit={handleFarmerSubmit}>
+                  <input
+                    required
+                    value={farmerForm.name}
+                    onChange={(event) => setFarmerForm((prev) => ({ ...prev, name: event.target.value }))}
+                    className={fieldClassName}
+                    placeholder="Full name"
+                  />
+                  <input
+                    required
+                    value={farmerForm.phone}
+                    onChange={(event) => setFarmerForm((prev) => ({ ...prev, phone: event.target.value }))}
+                    className={fieldClassName}
+                    placeholder="Phone number"
+                  />
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <input
+                      required
+                      value={farmerForm.state}
+                      onChange={(event) => setFarmerForm((prev) => ({ ...prev, state: event.target.value }))}
+                      className={fieldClassName}
+                      placeholder="State"
+                    />
+                    <input
+                      required
+                      value={farmerForm.pondSize}
+                      onChange={(event) => setFarmerForm((prev) => ({ ...prev, pondSize: event.target.value }))}
+                      className={fieldClassName}
+                      placeholder="Pond size (acre/hectare)"
+                    />
+                  </div>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <select
+                      value={farmerForm.species}
+                      onChange={(event) => setFarmerForm((prev) => ({ ...prev, species: event.target.value }))}
+                      className={fieldClassName}
+                    >
+                      <option>Vannamei</option>
+                      <option>Black Tiger</option>
+                      <option>Other</option>
+                    </select>
+                    <select
+                      value={farmerForm.feedStage}
+                      onChange={(event) => setFarmerForm((prev) => ({ ...prev, feedStage: event.target.value }))}
+                      className={fieldClassName}
+                    >
+                      <option>Starter</option>
+                      <option>Grower</option>
+                      <option>Finisher</option>
+                    </select>
+                  </div>
+                  <textarea
+                    rows={3}
+                    value={farmerForm.message}
+                    onChange={(event) => setFarmerForm((prev) => ({ ...prev, message: event.target.value }))}
+                    className={fieldClassName}
+                    placeholder="Farm requirement (optional)"
+                  />
+                  <button
+                    type="submit"
+                    className="rounded-xl bg-gradient-to-r from-orange-500 to-orange-400 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-orange-500/30"
+                  >
+                    Send on WhatsApp
+                  </button>
+                  {farmerSubmitted ? (
+                    <p className="text-xs font-semibold text-emerald-700">Lead captured. WhatsApp chat opened with pre-filled details.</p>
+                  ) : null}
+                </form>
               </div>
-              <div className="relative h-72 w-full sm:h-80">
-                <iframe
-                  title="Dr. Attar Aqua Feed Location Map"
-                  src="https://www.google.com/maps?q=DR%20ATTAR%20AQUA%20FEED%2C%20Dohki%2C%20Haryana%20127306&output=embed"
-                  className="h-full w-full border-0"
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  allowFullScreen
-                />
-              </div>
-              <div className="border-t border-white/20 px-5 py-3">
-                <a
-                  href="https://www.google.com/maps/dir//DR+ATTAR+AQUA+FEED,+Dohki,+Haryana+127306/@28.5058064,77.0679584,15z/data=!4m8!4m7!1m0!1m5!1m1!1s0x39128bd653d58f2b:0x8c03eb0bb4d0189e!2m2!1d76.1533116!2d28.6417155?entry=ttu&g_ep=EgoyMDI2MDMwMS4xIKXMDSoASAFQAw%3D%3D"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 text-sm font-bold text-orange-200 transition hover:text-orange-100"
-                >
-                  Open directions in Google Maps <ArrowUpRight className="h-4 w-4" />
-                </a>
+
+              <div id="dealer-form" className="rounded-3xl bg-white p-6 text-slate-900 shadow-2xl xl:flex-1">
+                <h3 className="font-display text-3xl">Become a Dealer</h3>
+                <p className="mt-1 text-sm text-slate-600">Dealer lead form with territory and capacity qualification.</p>
+                <form className="mt-5 grid gap-3" onSubmit={handleDealerSubmit}>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <input
+                      required
+                      value={dealerForm.name}
+                      onChange={(event) => setDealerForm((prev) => ({ ...prev, name: event.target.value }))}
+                      className={fieldClassName}
+                      placeholder="Full name"
+                    />
+                    <input
+                      required
+                      value={dealerForm.phone}
+                      onChange={(event) => setDealerForm((prev) => ({ ...prev, phone: event.target.value }))}
+                      className={fieldClassName}
+                      placeholder="Phone number"
+                    />
+                  </div>
+                  <input
+                    required
+                    value={dealerForm.company}
+                    onChange={(event) => setDealerForm((prev) => ({ ...prev, company: event.target.value }))}
+                    className={fieldClassName}
+                    placeholder="Company / Firm name"
+                  />
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <input
+                      required
+                      value={dealerForm.state}
+                      onChange={(event) => setDealerForm((prev) => ({ ...prev, state: event.target.value }))}
+                      className={fieldClassName}
+                      placeholder="State"
+                    />
+                    <input
+                      required
+                      value={dealerForm.district}
+                      onChange={(event) => setDealerForm((prev) => ({ ...prev, district: event.target.value }))}
+                      className={fieldClassName}
+                      placeholder="District"
+                    />
+                  </div>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <select
+                      value={dealerForm.monthlyVolume}
+                      onChange={(event) => setDealerForm((prev) => ({ ...prev, monthlyVolume: event.target.value }))}
+                      className={fieldClassName}
+                    >
+                      <option>Up to 5 tons</option>
+                      <option>5 to 15 tons</option>
+                      <option>15 to 30 tons</option>
+                      <option>30+ tons</option>
+                    </select>
+                    <select
+                      value={dealerForm.logistics}
+                      onChange={(event) => setDealerForm((prev) => ({ ...prev, logistics: event.target.value }))}
+                      className={fieldClassName}
+                    >
+                      <option>Yes</option>
+                      <option>No</option>
+                    </select>
+                  </div>
+                  <textarea
+                    rows={3}
+                    value={dealerForm.message}
+                    onChange={(event) => setDealerForm((prev) => ({ ...prev, message: event.target.value }))}
+                    className={fieldClassName}
+                    placeholder="Additional details (optional)"
+                  />
+                  <button
+                    type="submit"
+                    className="rounded-xl bg-gradient-to-r from-slate-900 to-slate-700 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-slate-900/30"
+                  >
+                    Submit Dealer Interest
+                  </button>
+                  {dealerSubmitted ? (
+                    <p className="text-xs font-semibold text-emerald-700">Dealer lead captured. WhatsApp chat opened with pre-filled details.</p>
+                  ) : null}
+                </form>
               </div>
             </div>
 

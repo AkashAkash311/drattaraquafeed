@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Catamaran, Salsa } from "next/font/google";
 import "./globals.css";
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://drattaraquafeed.com";
+
 const bodyFont = Catamaran({
   variable: "--font-body",
   subsets: ["latin"],
@@ -15,6 +17,7 @@ const displayFont = Salsa({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "Dr. Attar Aqua Feed",
   description: "High-Quality Aqua Feed Solutions for Healthy Aquatic Life",
 };

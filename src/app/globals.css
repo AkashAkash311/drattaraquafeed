@@ -84,3 +84,27 @@ body {
     transform: translateY(0);
   }
 }
+
+.testimonial-marquee {
+  animation: testimonial-scroll 40s linear infinite;
+}
+
+.testimonial-marquee:hover {
+  animation-play-state: paused;
+}
+
+@keyframes testimonial-scroll {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .testimonial-marquee {
+    animation: none;
+  }
+}
